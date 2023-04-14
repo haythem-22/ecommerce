@@ -1,15 +1,24 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
-
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const {cartCount, openCart} = useCart()
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const { cartCount, openCart } = useCart();
+  const { user, logout, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
-  const checkCartClick = () =>{
-    console.log('cart clicked from header')
-    openCart()
-  }
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  const checkCartClick = () => {
+    console.log('cart clicked from header');
+    openCart();
+  };
 
   return (
     <header className="header">
@@ -33,8 +42,21 @@ const Header = () => {
       
       <div className="logo"></div>
       
-      <div className="cart" onClick={openCart} style={{cursor: 'pointer'}}>
-        🛍 <span id="cart-count">{cartCount}</span>
+      <div className="header-right">
+        {isAuthenticated && (
+          <div className="user-menu" onClick={() => setUserMenuOpen(!userMenuOpen)}>
+            <span className="user-email">{user?.email?.split('@')[0]}</span>
+            {userMenuOpen && (
+              <div className="user-dropdown">
+                <button onClick={handleLogout}>Logout</button>
+              </div>
+            )}
+          </div>
+        )}
+        
+        <div className="cart" onClick={checkCartClick} style={{cursor: 'pointer'}}>
+          🛍 <span id="cart-count">{cartCount}</span>
+        </div>
       </div>
     </header>
   );
