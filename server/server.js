@@ -1,14 +1,14 @@
 require("dotenv").config()
-const expresss = require("express")
+const express = require("express")
 const mongoose = require("mongoose")
 const authRoutes = require("./routes/authRoutes")
-const cors = require('cors')
+const productRoutes = require("./routes/productRoutes")
+const cors = require("cors")
 
-const app = expresss()
+const app = express()
 
 app.use(cors())
-
-app.use(expresss.json())
+app.use(express.json())
 
 app.use((req, res, next) => {
     console.log(req.path, req.method)
@@ -16,6 +16,7 @@ app.use((req, res, next) => {
 })
 
 app.use('/api/auth', authRoutes)
+app.use('/api/products', productRoutes)
 
 mongoose.connect(process.env.DB_URI)
     .then(()=>{
